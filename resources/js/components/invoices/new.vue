@@ -166,7 +166,7 @@ import router from "../../router";
                     </div>
                     <div style="padding: 10px 30px !important;">
                         <button class="btn btn-sm btn__open--modal" @click="openModel()">
-                            Add New Line
+                            Add New Product
                         </button>
                     </div>
                 </div>
@@ -200,7 +200,7 @@ import router from "../../router";
                 </div>
                 <div>
                     <a class="btn btn-secondary" @click="onSave()">
-                       <button type="submit"> Save </button>
+                       Save
                     </a>
                 </div>
             </div>
