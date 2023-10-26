@@ -37,76 +37,58 @@
 </script>
 
 <template>
-    <div class="container">
-        <div class="invoices">
-        
-            <div class="card__header">
-                <div>
-                    <h2 class="invoice__title">Invoices</h2>
+    <div class="container my-5">
+        <div class="">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Invoices</h2>
                 </div>
-                <div>
-                    <a class="btn btn-secondary" @click="newInvoice">
+                <div class="col-md-6 text-end">
+                    <a class="btn btn-success" @click="newInvoice">
                         New Invoice
                     </a>
                 </div>
             </div>
 
-            <div class="table card__content">
-                <div class="table--filter">
-                    <span class="table--filter--collapseBtn ">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </span>
-                    <div class="table--filter--listWrapper">
-                        <ul class="table--filter--list">
-                            <li>
-                                <p class="table--filter--link table--filter--link--active">
-                                    All
-                                </p>
-                            </li>
-                            <li>
-                                <p class="table--filter--link ">
-                                    Paid
-                                </p>
-                            </li>
-                        </ul>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search Invoice" aria-label="RSearch Invoice" aria-describedby="basic-addon2" v-model="searchInvoice" @keyup="search()">
+                        <span class="input-group-text" id="basic-addon2">Search Invoice</span>
                     </div>
-                </div>
-
-                <div class="table--search">
-                    <div class="table--search--wrapper">
-                        <select class="table--search--select" name="" id="">
-                            <option value="">Filter</option>
-                        </select>
-                    </div>
-                    <div class="relative">
-                        <i class="table--search--input--icon fas fa-search "></i>
-                        <input class="table--search--input" type="text" placeholder="Search invoice" v-model="searchInvoice" @keyup="search()">
-                    </div>
-                </div>
-
-                <div class="table--heading">
-                    <p>ID</p>
-                    <p>Date</p>
-                    <p>Number</p>
-                    <p>Customer</p>
-                    <p>Due Date</p>
-                    <p>Total</p>
-                </div>
-
-                <!-- item 1 -->
-                <div class="table--items" v-for="item in invoices" :key="item.id"  v-if="invoices.length > 0">
-                    <a href="#" @click="onShow(item.id)">{{ item.id }}</a>
-                    <p>{{ item.date }}</p>
-                    <p>{{ item.number }}</p>
-                    <p v-if="item.customer">{{ item.customer.firstname }}</p>
-                    <p v-else></p>
-                    <p>{{ item.due_date }}</p>
-                    <p>{{ item.total }}</p>
-                </div>
-                <div class="table--items" v-else>
-                    <p>Invoice Not Found</p>
                 </div>
             </div>
+
+            <table class="table table-success table-striped" id="myTable">
+                <thead>
+                    <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Number</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Due Date</th>
+                    <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in invoices" :key="item.id"  v-if="invoices.length > 0">
+                        <th scope="row">
+                            <a href="#" @click="onShow(item.id)">{{ item.id }}</a>
+                        </th>
+                        <td>{{ item.date }}</td>
+                        <td>{{ item.number }}</td>
+                        <td v-if="item.customer">{{ item.customer.firstname }}</td>
+                        <td v-else></td>
+                        <td>{{ item.due_date }}</td>
+                        <td>{{ item.total }}</td>
+                    </tr>
+                    <tr v-else>
+                        <p>Invoice Not Found</p>
+                    </tr>
+                </tbody>
+            </table>
             
         </div>
     </div>

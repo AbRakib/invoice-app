@@ -39,142 +39,131 @@ import { useRouter } from "vue-router";
 
 <template>
     <div class="container">
-        <div class="invoices">
-        
-            <div class="card__header">
-                <div>
-                    <h2 class="invoice__title">Invoice</h2>
-                </div>
-                <div>
-                    
-                </div>
-            </div>
-            <div>
-                <div class="card__header--title ">
-                    <h1 class="mr-2"># {{ form.id }}</h1>
-                    <p>{{ form.created_at }} </p>
-                </div>
-        
-                <div>
-                    <ul  class="card__header-list">
-                        <li>
-                            <!-- Select Btn Option -->
-                            <button class="selectBtnFlat" @click="print()">
-                                <i class="fas fa-print"></i>
-                                Print
-                            </button>
-                            <!-- End Select Btn Option -->
-                        </li>
-                        <li>
-                            <!-- Select Btn Option -->
-                            <button class="selectBtnFlat" @click="onEdit(form.id)">
-                                <i class=" fas fa-reply"></i>
-                                Edit
-                            </button>
-                            <!-- End Select Btn Option -->
-                        </li>
-                        <li>
-                            <!-- Select Btn Option -->
-                            <button class="selectBtnFlat" @click="onDelete(form.id)">
-                                <i class=" fas fa-pencil-alt"></i>
-                                Delete
-                            </button>
-                            <!-- End Select Btn Option -->
-                        </li>
-                        
-                    </ul>
-                </div>
-            </div>
-
-            <div class="table invoice">
-                <div class="logo">
-                    <img src="assets/img/logo.png" alt="" style="width: 200px;">
-                </div>
-                <div class="invoice__header--title">
-                    <p></p>
-                    <p class="invoice__header--title-1">Invoice</p>
-                    <p></p>
-                </div>
-
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <router-link to="/">
+                    <button class="btn btn-sm btn-secondary mx-2">
+                        <i class=" fas fa-reply"></i>
+                        Back
+                    </button>
+                </router-link>
                 
-                <div class="invoice__header--item">
-                    <div>
-                        <h2>Invoice To:</h2>
-                        <p v-if="form.customer">{{ form.customer.firstname }}</p>
-                    </div>
-                    <div>
-                            <div class="invoice__header--item1">
-                                <p>Invoice#</p>
-                                <span>#{{ form.number }}</span>
-                            </div>
-                            <div class="invoice__header--item2">
-                                <p>Date</p>
-                                <span>{{ form.date }}</span>
-                            </div>
-                            <div class="invoice__header--item2">
-                                <p>Due Date</p>
-                                <span>{{ form.due_date }}</span>
-                            </div>
-                            <div class="invoice__header--item2">
-                                <p>Reference</p>
-                                <span>{{ form.reference }}</span>
-                            </div>
-                        
-                    </div>
-                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <button class="btn btn-sm btn-primary mx-2" @click="print()">
+                    <i class="fas fa-print"></i>
+                    Print
+                </button>
+                <button class="btn btn-sm btn-warning mx-2" @click="onEdit(form.id)">
+                    <i class=" fas fa-pencil-alt"></i>
+                    Edit
+                </button>
+                <button class="btn btn-sm btn-danger mx-2" @click="onDelete(form.id)">
+                    <i class="fas fa-trash-alt"></i>
+                    Delete
+                </button>
+            </div>
+        </div>
 
-                <div class="table py1">
+        <div class="bg-white my-2">
+            <div class="mx-5 py-4">
+                <img src="./assets/img/logo.png" alt="" style="width: 200px;">
+            </div>
 
-                    <div class="table--heading3">
-                        <p>#</p>
-                        <p>Item Description</p>
-                        <p>Unit Price</p>
-                        <p>Qty</p>
-                        <p>Total</p>
-                    </div>
-        
-                    <!-- item 1 -->
-                    <div class="table--items3" v-for="(item, i) in form.invoice_items" :key="item.id">
-                        <p>{{ i+1 }}</p>
-                        <p>{{ item.product.description }}</p>
-                        <p>$ {{ item.unit_price }}</p>
-                        <p>{{ item.quantity }}</p>
-                        <p>$ {{ item.unit_price * item.quantity }}</p>
-                    </div>
-                </div>
+            <div class="bg-warning text-end">
+                <div class="text-dark d-inline-block h2 bg-light mx-5 px-5">INVOICE</div>
+            </div>
 
-                <div  class="invoice__subtotal">
+            <div class="row my-2 mx-5">
+                <div class="col-md-6">
                     <div>
-                        <h2>Thank you for your business</h2>   
-                    </div>
-                    <div>
-                        <div class="invoice__subtotal--item1">
-                            <p>Sub Total</p>
-                            <span> $ {{ form.sub_total }}</span>
+                        <span class="h5 text-black ">Invoice To:</span>
+                        <div v-if="form.customer">
+                            <span class="fw-bold text-muted">{{ form.customer.firstname }}</span>
+                            <br>
+                            <span class="text-muted fw-bold">{{ form.customer.address }}</span>
                         </div>
-                        <div class="invoice__subtotal--item2">
-                            <p>Discount</p>
-                            <span>$ {{ form.discount }}</span>
-                        </div>
-                        
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="">
+                        <div v-if="form.customer">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <span class="fw-bold text-muted">Invoice# </span>
+                                </div>
+                                <div class="col-md-6 text-dark">
+                                    {{ form.number }}
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="text-muted fw-bold">Date: </span>
+                                </div>
+                                <div class="col-md-6 text-dark">
+                                    {{ form.date }} 
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="text-muted fw-bold">Due Date: </span>
+                                </div>
+                                <div class="col-md-6 text-dark">
+                                    {{ form.due_date }} 
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="text-muted fw-bold">Reference: </span>
+                                </div>
+                                <div class="col-md-6 text-dark">
+                                    {{ form.reference }} 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                <div class="invoice__total">
+            <div class="mx-5 my-5">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Item Description</th>
+                            <th scope="col">Unit Price</th>
+                            <th scope="col">Qty</th>
+                            <th scope="col">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, i) in form.invoice_items" :key="item.id">
+                            <th scope="row">{{ i+1 }}</th>
+                            <td>{{ item.product.description }}</td>
+                            <td>${{ item.unit_price }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.unit_price * item.quantity }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row mx-5 text-dark">
+                <div class="col-md-6">
+                    <h5>Thank you for your business</h5>
                     <div>
-                        <h2>Terms and Conditions</h2>
+                        <b>Terms & Conditions</b>
                         <p>{{ form.terms_and_conditions }}</p>
                     </div>
-                    <div>
-                        <div class="grand__total" >
-                            <div class="grand__total--items">
-                                <p>Grand Total</p>
-                                <span>$ {{ form.total }}</span>
-                            </div>
-                        </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-5 fw-bold text-muted">Sub Total</div>
+                        <div class="col-md-5 fw-bold text-muted">${{ form.sub_total }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 fw-bold text-muted">Discount</div>
+                        <div class="col-md-5 fw-bold text-muted">${{ form.discount }}</div>
+                    </div>
+                    <div class="row bg-warning p-2 mb-5">
+                        <div class="col-md-5 fw-bold text-muted">Grand Total</div>
+                        <div class="col-md-5 fw-bold text-muted">${{ form.total }}</div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
