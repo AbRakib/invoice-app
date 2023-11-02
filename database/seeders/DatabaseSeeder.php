@@ -17,11 +17,10 @@ class DatabaseSeeder extends Seeder {
      * Seed the application's database.
      */
     public function run(): void {
-        // \App\Models\User::factory(10)->create();
         // Counter::factory( 1 )->create();
         // Product::factory(5)->create();
         // Customer::factory(10)->create();
         // Invoice::factory(5)->create();
-        InvoiceItem::factory(5)->create();
+        // InvoiceItem::factory(5)->create();
     }
 }

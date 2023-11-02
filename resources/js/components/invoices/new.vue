@@ -1,4 +1,5 @@
 <script setup>
+    import axios from "axios";
     import { onMounted, ref } from "vue";
     import { useRouter } from "vue-router";
 
@@ -6,10 +7,15 @@
 
     let form = ref([])
     let allCustomers = ref([])
+    let allUsers = ref([])
+    // let user_id = ref([])
     let customer_id = ref([])
     let item = ref([])
     let listCart = ref([])
     let listproducts = ref([])
+
+    let name = localStorage.getItem('name');
+    console.log(name);
 
     const showModel = ref(false)
     const hideModel = ref(true)
@@ -18,6 +24,7 @@
         indexForm()
         getAllCustomers()
         getproducts()
+        getAllUsers()
     })
 
     const indexForm = async () => {
@@ -28,6 +35,11 @@
     const getAllCustomers = async () => {
         let response = await axios.get('/api/customers')
         allCustomers.value = response.data.customers
+    }
+
+    const getAllUsers = async () => {
+        let response = await axios.get('/api/users')
+        allUsers.value = response.data.users
     }
 
     const addCart = (item) => {
@@ -86,7 +98,7 @@
             formData.append('date', form.value.date)
             formData.append('due_date', form.value.due_date)
             formData.append('number', form.value.number)
-            formData.append('reference', form.value.reference)
+            formData.append('reference', form.value.user)
             formData.append('discount', form.value.discount)
             formData.append('subtotal', subtotal)
             formData.append('total', grandTotal)
@@ -94,7 +106,7 @@
 
             axios.post("/api/add_invoice", formData)
             listCart.value = []
-            router.push('/')
+            router.push('/invoices')
         }
     }
 </script>
@@ -114,7 +126,7 @@
             <div class="row px-5 py-3">
                 <div class="col-md-4">
                     <div class="">
-                        <label for="customers">Customer</label>
+                        <label class="fw-bold" for="customers">Customer :</label>
                         <select name="" id="customers" class="form-control" v-model="customer_id">
                             <option disabled>Select Customer</option>
                             <option :value="customer.id" v-for="customer in allCustomers" :key="customer.id">
@@ -131,18 +143,28 @@
                 </div>
                 <div class="col-md-4">
                     <div class="">
-                        <label for="date">Date</label>
+                        <label class="fw-bold" for="date">Date :</label>
                         <input id="date" placeholder="dd-mm-yyyy" type="date" class="form-control" v-model="form.date">
-                        <label for="due_date">Due Date</label>
+                        <label class="fw-bold" for="due_date">Due Date :</label>
                         <input id="due_date" type="date" class="form-control" v-model="form.due_date">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="">
-                        <label for="number" >Numero</label>
+                        <label class="fw-bold" for="number" >Numero :</label>
                         <input type="text" class="form-control" v-model="form.number">
-                        <label for="reference">Reference(Optional)</label>
-                        <input type="text" class="form-control" v-model="form.reference">
+
+                        <!-- <label for="users">User <small class="fw-bold text-muted ">(Who create invoice)</small></label>
+                        <select name="users" id="users" class="form-control" v-model="user_id">
+                            <option selected>Select Customer</option>
+                            <option :value="user.name" v-for="user in allUsers" :key="user.id">
+                                {{ user.name }}
+                            </option>
+                        </select> -->
+
+                        <label class="fw-bold" for="user" >User :</label>
+                        <!-- <input type="text" class="form-control" v-model="form.user"> -->
+                        <p class="px-3 border rounded p-1 mt-1">{{ name }}</p>
                     </div>
                 </div>
             </div>
