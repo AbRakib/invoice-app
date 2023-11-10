@@ -1,5 +1,6 @@
 <script setup >
 import axios from "axios";
+import moment from "moment";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { Bootstrap4Pagination } from 'laravel-vue-pagination';
@@ -24,7 +25,7 @@ const getInvoices = async (page) => {
 
 const search = async () => {
     let response = await axios.get('/api/search_invoice?s=' + searchInvoice.value);
-    console.log('response', response.data.invoices);
+    // console.log('response', response.data.invoices);
     invoices.value = response.data.invoices;
 }
 
@@ -66,7 +67,6 @@ function logoutUser() {
                 <div class="col-md-4">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="Search Invoice" aria-label="RSearch Invoice" aria-describedby="basic-addon2" v-model="searchInvoice" @keyup="search()">
-                        <span class="input-group-text" id="basic-addon2">Search Invoice</span>
                     </div>
                 </div>
             </div>
@@ -86,8 +86,8 @@ function logoutUser() {
                         <th scope="row">
                             <a href="#" @click="onShow(item.id)">{{ item.id }}</a>
                         </th>
-                        <td>{{ item.date }}</td>
-                        <td>{{ item.number }}</td>
+                        <td>{{ moment(item.date, 'YYYY-MM-DD HH:mm:ss').format('MMMM Do YYYY, h:mm A')}}</td>
+                        <td><a href="#" @click="onShow(item.id)">{{ item.number }}</a></td>
                         <td v-if="item.customer">{{ item.customer.firstname }}</td>
                         <td v-else></td>
                         <td>{{ item.due_date }}</td>

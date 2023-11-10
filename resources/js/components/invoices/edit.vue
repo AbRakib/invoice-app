@@ -142,7 +142,7 @@
                 <div class="col-md-4">
                     <div class="">
                         <label for="date">Date</label> 
-                        <input id="date" placeholder="dd-mm-yyyy" type="date" class="form-control" v-model="form.date"> <!---->
+                        <input id="date" placeholder="dd-mm-yyyy" type="datetime-local" class="form-control" v-model="form.date"> <!---->
                         <label for="due_date">Due Date</label> 
                         <input id="due_date" type="date" class="form-control" v-model="form.due_date">
                     </div>

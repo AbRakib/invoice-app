@@ -6,7 +6,6 @@ use App\Models\Counter;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller {
 
@@ -15,7 +14,6 @@ class InvoiceController extends Controller {
         return response()->json( [
             'invoices' => $invoices,
         ], 200 );
-
     }
 
     public function search_invoice( Request $request ) {
@@ -26,7 +24,7 @@ class InvoiceController extends Controller {
                 ->orWhere( 'number', 'LIKE', "%$search%" )
                 ->orWhere( 'date', 'LIKE', "%$search%" )
                 ->orWhere( 'due_date', 'LIKE', "%$search%" )
-                ->get();
+                ->paginate( 10 );
             return response()->json( [
                 'invoices' => $invoices,
             ], 200 );
@@ -69,15 +67,24 @@ class InvoiceController extends Controller {
     }
 
     public function add_invoice( Request $request ) {
+
+        $validatedData = $request->validate( [
+            'number'      => ['required', 'unique:invoices'],
+            'total'       => ['required'],
+            'customer_id' => ['required'],
+            'date'        => ['required'],
+            'reference'   => ['required'],
+        ] );
+
         $invoiceData['sub_total'] = $request->subtotal;
         $invoiceData['total'] = $request->total;
         $invoiceData['customer_id'] = $request->customer_id;
         $invoiceData['number'] = $request->number;
         $invoiceData['date'] = $request->date;
         $invoiceData['due_date'] = $request->due_date;
-        $invoiceData['discount'] = $request->discount;
+        $invoiceData['discount'] = $request->discount ? $request->discount : '0';
         $invoiceData['reference'] = $request->reference;
-        $invoiceData['terms_and_conditions'] = $request->terms_and_conditions;
+        $invoiceData['terms_and_conditions'] = $request->terms_and_conditions ? $request->terms_and_conditions : 'None';
 
         $invoice = Invoice::create( $invoiceData );
 

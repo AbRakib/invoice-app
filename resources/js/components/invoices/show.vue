@@ -1,5 +1,6 @@
 <script setup>
 import axios from "axios";
+import moment from "moment";
 import { onMounted, ref } from 'vue';
 import { useRouter } from "vue-router";
 
@@ -99,7 +100,7 @@ import { useRouter } from "vue-router";
                                     <span class="text-muted fw-bold">Date: </span>
                                 </div>
                                 <div class="col-md-6 text-dark">
-                                    {{ form.date }} 
+                                    {{ moment(form.date, 'YYYY-MM-DD HH:mm:ss').format('MMMM Do YYYY, h:mm A')}}
                                 </div>
                                 <div class="col-md-6">
                                     <span class="text-muted fw-bold">Due Date: </span>

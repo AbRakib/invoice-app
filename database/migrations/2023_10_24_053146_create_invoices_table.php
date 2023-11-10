@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('number')->unique();
             $table->integer('customer_id')->unsigned();
-            $table->date('date');
-            $table->date('due_date');
+            $table->timestamp('date');
+            $table->string('due_date')->nullable();
             $table->string('reference')->nullable();
-            $table->text('terms_and_conditions');
+            $table->text('terms_and_conditions')->nullable();
             $table->double('sub_total');
             $table->double('discount')->default(0);
             $table->double('total');

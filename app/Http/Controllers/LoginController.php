@@ -82,4 +82,8 @@ class LoginController extends Controller {
             'data' => "success",
         ], 200 );
     }
+
+    public function home() {
+        return view('welcome');
+    }
 }
