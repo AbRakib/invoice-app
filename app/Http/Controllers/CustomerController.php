@@ -20,4 +20,5 @@ class CustomerController extends Controller {
             'users' => $users
         ], 200);
     }
+
 }

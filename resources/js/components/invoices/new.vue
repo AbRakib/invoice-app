@@ -9,6 +9,7 @@
     let allCustomers = ref([])
     let allUsers = ref([])
     // let user_id = ref([])
+    let searchProducts = ref([]);
     let customer_id = ref([])
     let item = ref([])
     let listCart = ref([])
@@ -32,6 +33,12 @@
         form.value = response.data
     }
 
+    const ProductSearch = async () => {
+        let response = await axios.get('/api/search_product?s=' + searchProducts.value);
+        // console.log('response', response.data.invoices);
+        listproducts.value = response.data.products
+    }
+
     const getAllCustomers = async () => {
         let response = await axios.get('/api/customers')
         allCustomers.value = response.data.customers
@@ -43,6 +50,7 @@
     }
 
     const addCart = (item) => {
+        // console.log(item.id);
         const itemcart = {
             id: item.id,
             item_code : item.item_code,
@@ -50,7 +58,17 @@
             unit_price: item.unit_price,
             quantity : item.quantity,
         }
-        listCart.value.push(itemcart)
+        
+        for (let i = 0; i < listCart.value.length; i++) {
+            const products = listCart.value[i];
+            console.log(products.id);
+            if(products.id == item.id){
+                alert("Already Taken This Product");
+                return true;
+            }
+        }
+        listCart.value.push(itemcart);
+        
         // closeModel()
     }
 
@@ -251,7 +269,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="text-center mb-3">
-                            <input type="text" class="form-control form-control-sm" placeholder="Search with Product id/name">
+                            <input type="text" class="form-control form-control-sm" placeholder="Search with Product id/name" v-model="searchProducts" @keyup="ProductSearch()">
                         </div>
                         <div class="text-center" v-for="(item, i) in listproducts" :key="item.id">
                             <div style="display: grid; grid-template-columns: 35px 353px 45px; align-items: center;">

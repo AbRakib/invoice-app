@@ -24,8 +24,16 @@ import { useRouter } from "vue-router";
         form.value = response.data.invoice;
     }
 
-    const print = () => {
-        window.print()
+    const print = (printId) => {
+        var printContents = document.getElementById(printId).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+
         router.push('/').catch(()=>{})
     }
 
@@ -51,7 +59,7 @@ import { useRouter } from "vue-router";
                 
             </div>
             <div class="col-md-6 text-end">
-                <button class="btn btn-sm btn-primary mx-2" @click="print()">
+                <button class="btn btn-sm btn-primary mx-2" @click="print('invoice_section')">
                     <i class="fas fa-print"></i>
                     Print
                 </button>
@@ -66,7 +74,7 @@ import { useRouter } from "vue-router";
             </div>
         </div>
 
-        <div class="bg-white my-2">
+        <div class="bg-light my-2" id="invoice_section">
             <div class="mx-5 py-4">
                 <img src="./assets/img/logo.png" alt="" style="width: 200px;">
             </div>
@@ -80,9 +88,16 @@ import { useRouter } from "vue-router";
                     <div>
                         <span class="h5 text-black ">Invoice To:</span>
                         <div v-if="form.customer">
-                            <span class="fw-bold text-muted">{{ form.customer.firstname }}</span>
+                            <span class="fw-bold text-muted">
+                                <i class="fas fa-user"></i>
+                                {{ form.customer.firstname }}</span>
                             <br>
-                            <span class="text-muted fw-bold">{{ form.customer.address }}</span>
+                            <div class="text-muted fw-bold w-50">
+                                <i class="fas fa-address-card"></i>
+                                {{ form.customer.address }}</div>
+                            <div class="text-muted fw-bold w-50">
+                                <i class="fas fa-phone-square"></i>
+                                {{ form.customer.phone }}</div>
                         </div>
                     </div>
                 </div>
@@ -100,7 +115,7 @@ import { useRouter } from "vue-router";
                                     <span class="text-muted fw-bold">Date: </span>
                                 </div>
                                 <div class="col-md-6 text-dark">
-                                    {{ moment(form.date, 'YYYY-MM-DD HH:mm:ss').format('MMMM Do YYYY, h:mm A')}}
+                                    {{ moment(form.date, 'YYYY-MM-DD HH:mm:ss').format('MMM Do YYYY, h:mm A')}}
                                 </div>
                                 <div class="col-md-6">
                                     <span class="text-muted fw-bold">Due Date: </span>
