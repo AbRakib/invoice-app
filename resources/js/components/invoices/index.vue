@@ -86,7 +86,7 @@ function logoutUser() {
                         <th scope="row">
                             <a href="#" @click="onShow(item.id)">{{ item.id }}</a>
                         </th>
-                        <td>{{ moment(item.date, 'YYYY-MM-DD HH:mm:ss').format('MMMM Do YYYY, h:mm A')}}</td>
+                        <td>{{ moment(item.date, 'YYYY-MM-DD HH:mm:ss').format('MMM Do YYYY, h:mm A')}}</td>
                         <td><a href="#" @click="onShow(item.id)">{{ item.number }}</a></td>
                         <td v-if="item.customer">{{ item.customer.firstname }}</td>
                         <td v-else></td>

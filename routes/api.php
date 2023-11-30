@@ -31,6 +31,7 @@ Route::get( "/search_invoice", [InvoiceController::class, "search_invoice"] );
 Route::get( "/search_product", [ProductController::class, "search_product"] );
 Route::get( "/create_invoice", [InvoiceController::class, "create_invoice"] );
 Route::get( "/customers", [CustomerController::class, "all_customer"] );
+Route::post( "/add_customer", [CustomerController::class, "store"] );
 Route::get( "/users", [CustomerController::class, "all_user"] );
 Route::get( "/products", [ProductController::class, "all_product"] );
 Route::post( "/add_invoice", [InvoiceController::class, "add_invoice"] );

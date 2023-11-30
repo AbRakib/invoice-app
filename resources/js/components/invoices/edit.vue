@@ -11,6 +11,9 @@
     let allCustomers = ref([])
     let customer_id = ref([])
     let listproducts = ref([])
+    let searchProducts = ref([]);
+    let itemcart = ref([]);
+    let listCart = ref([]);
 
     const showModel = ref(false)
     const hideModel = ref(true)
@@ -28,10 +31,11 @@
             item_code : item.item_code,
             description: item.description,
             unit_price: item.unit_price,
-            quantity : item.quantity,
+            quantity : 1,
         }
+        console.log(item.id);
         form.value.invoice_items.push(itemcart)
-        closeModel()
+        // closeModel()
     }
 
     const props = defineProps({
@@ -46,6 +50,12 @@
         getAllCustomers()
         getproducts()
     })
+
+    const ProductSearch = async () => {
+        let response = await axios.get('/api/search_product?s=' + searchProducts.value);
+        // console.log('response', response.data.invoices);
+        listproducts.value = response.data.products
+    }
 
     const getInvoice = async () => {
         let response = await axios.get(`/api/edit_invoice/${props.id}`)
@@ -236,20 +246,27 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Products Added Form</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModel()"></button>
                     </div>
                     <div class="modal-body">
-                        <ul>
-                            <li v-for="(item, i) in listproducts" :key="item.id" style="display: grid; grid-template-columns: 30px 350px 15px; align-items: center; padding-bottom: 5px;">
-                                <p>{{ i+1 }}</p>
-                                <a href="">{{ item.item_code }} {{ item.description }}</a>
-                                <button @click="addCart(item)" style="border:1px solid #e0e0e0; width: 35px; height: 35px; cursor: pointer;" data-bs-dismiss="modal">+</button>
-                            </li>
-                        </ul>
+                        <div class="text-center mb-3">
+                            <input type="text" class="form-control form-control-sm" placeholder="Search with Product id/name" v-model="searchProducts" @keyup="ProductSearch()">
+                        </div>
+                        <div class="text-center" v-for="(item, i) in listproducts" :key="item.id">
+                            <div style="display: grid; grid-template-columns: 35px 353px 45px; align-items: center;">
+                                <p class="fw-bold p-0">{{ i+1 }}.</p>
+                                <p class="fw-bold text-success p-0">{{ item.item_code }} - {{ item.description }}</p>
+                                <p class="p-0">
+                                    <button class="btn border-success btn-sm text-success" @click="addCart(item)">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModel()">Close</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" @click="closeModel()">Close</button>
                     </div>
                 </div>
             </div>

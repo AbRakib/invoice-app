@@ -9,14 +9,13 @@
     let allCustomers = ref([])
     let allUsers = ref([])
     // let user_id = ref([])
-    let searchProducts = ref([]);
+    let searchProducts = ref([])
     let customer_id = ref([])
     let item = ref([])
     let listCart = ref([])
     let listproducts = ref([])
 
     let name = localStorage.getItem('name');
-    console.log(name);
 
     const showModel = ref(false)
     const hideModel = ref(true)
@@ -50,15 +49,14 @@
     }
 
     const addCart = (item) => {
-        // console.log(item.id);
+        console.log(item.id);
         const itemcart = {
             id: item.id,
             item_code : item.item_code,
             description: item.description,
             unit_price: item.unit_price,
-            quantity : item.quantity,
+            quantity : 1,
         }
-        
         for (let i = 0; i < listCart.value.length; i++) {
             const products = listCart.value[i];
             console.log(products.id);
@@ -68,7 +66,6 @@
             }
         }
         listCart.value.push(itemcart);
-        
         // closeModel()
     }
 
@@ -97,7 +94,7 @@
     }
     const total = () => {
         let subtotal = subTotal()
-        let discount = form.value.discount
+        let discount = Math.abs(form.value.discount)
         return subtotal-discount;
     }
 
@@ -117,7 +114,7 @@
             formData.append('due_date', form.value.due_date)
             formData.append('number', form.value.number)
             formData.append('reference', name)
-            formData.append('discount', form.value.discount)
+            formData.append('discount', Math.abs(form.value.discount))
             formData.append('subtotal', subtotal)
             formData.append('total', grandTotal)
             formData.append('terms_and_conditions', form.value.terms_and_conditions)
@@ -125,9 +122,44 @@
             axios.post("/api/add_invoice", formData)
             listCart.value = []
             router.push('/invoices')
-
         }
     }
+
+    const onSaveCustomer = () => {
+        const formDataCustomer = new FormData();
+        formDataCustomer.append('firstname', form.value.first_name);
+        formDataCustomer.append('lastname', form.value.last_name);
+        formDataCustomer.append('email', form.value.customer_email);
+        formDataCustomer.append('phone', form.value.customer_phone);
+        formDataCustomer.append('address', form.value.customer_address);
+
+        console.log([...formDataCustomer.entries()]);
+
+        axios.post("/api/add_customer", formDataCustomer)
+        .then(response => {
+            // Handle successful response
+            console.log(response.data);
+            // Reset the form
+            form.value.first_name = '';
+            form.value.last_name = '';
+            form.value.customer_email = '';
+            form.value.customer_phone = '';
+            form.value.customer_address = '';
+            getAllCustomers();
+            router.push('/invoice/new');
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 422) {
+            // Handle validation errors
+            console.log('Validation errors:', error.response.data.errors);
+            } else {
+            // Handle other errors
+            console.error('Error:', error.message);
+            }
+        });
+
+    };
+
 </script>
 
 <template>
@@ -140,6 +172,11 @@
                     Back
                 </button>
             </router-link>
+            <!-- Button trigger customer add modal -->
+            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#customer_add">
+                <i class="fa-solid fa-plus"></i>
+                New Customer
+            </button>
         </div>
         <div class="bg-white text-dark rounded">
             <div class="row px-5 py-3">
@@ -147,7 +184,6 @@
                     <div class="">
                         <label class="fw-bold" for="customers">Customer :</label>
                         <select name="" id="customers" class="form-control" v-model="customer_id">
-                            <option disabled>Select Customer</option>
                             <option :value="customer.id" v-for="customer in allCustomers" :key="customer.id">
                                 {{ customer.firstname }}
                             </option>
@@ -172,14 +208,6 @@
                     <div class="">
                         <label class="fw-bold" for="number" >Numero :</label>
                         <input type="text" class="form-control" v-model="form.number">
-
-                        <!-- <label for="users">User <small class="fw-bold text-muted ">(Who create invoice)</small></label>
-                        <select name="users" id="users" class="form-control" v-model="user_id">
-                            <option selected>Select Customer</option>
-                            <option :value="user.name" v-for="user in allUsers" :key="user.id">
-                                {{ user.name }}
-                            </option>
-                        </select> -->
 
                         <label class="fw-bold" for="user" >User :</label>
                         <!-- <input type="text" class="form-control" v-model="form.user"> -->
@@ -238,7 +266,7 @@
                         </div>
                         <div class="col-md">
                             <div class="form-floating">
-                                <input type="number" class="form-control" id="discount" v-model="form.discount">
+                                <input type="number" min="0" class="form-control" id="discount" v-model="form.discount">
                                 <label for="discount">Discount Amount</label>
                             </div>
                         </div>
@@ -257,7 +285,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" :class="{show: showModel}">
@@ -286,6 +313,46 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" @click="closeModel()">Close</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- add customer modal  -->
+        <div class="modal fade" id="customer_add" tabindex="-1" aria-labelledby="customer_addLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="customer_addLabel">Customer Add</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="p-2">
+                        <div class="mb-2">
+                            <label for="firstName" class="form-label small">First Name</label>
+                            <input type="text" class="form-control form-control-sm" name="first_name" id="firstName" v-model="form.first_name" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="lastName" class="form-label small">Last Name</label>
+                            <input type="text" class="form-control form-control-sm" name="last_name" id="lastName" v-model="form.last_name" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="customerEmail" class="form-label small">Email address</label>
+                            <input type="email" class="form-control form-control-sm" name="customer_email" id="customerEmail" aria-describedby="emailHelp" v-model="form.customer_email" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="phone" class="form-label small">Phone</label>
+                            <input type="number" class="form-control form-control-sm" name="customer_phone" id="phone" v-model="form.customer_phone" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="customer_address" class="form-label small">Address</label>
+                            <textarea name="customer_address" class="form-control form-control-sm" id="customer_address" cols="10" rows="5" v-model="form.customer_address" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" @click="onSaveCustomer()" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Save changes</button>
+                </div>
                 </div>
             </div>
         </div>
